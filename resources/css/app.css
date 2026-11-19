@@ -1,0 +1,62 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+@layer base {
+    body {
+        @apply bg-[#121212] text-white;
+    }
+}
+
+@layer utilities {
+    .bg-maroon-dark {
+        background-color: #4A0E17;
+    }
+
+    .bg-maroon-card {
+        background-color: #5C121E;
+    }
+
+    .bg-maroon-hover:hover {
+        background-color: #6E1624;
+    }
+
+    .border-maroon {
+        border-color: #7A1C2B;
+    }
+
+    .text-gold {
+        color: #E5A93C;
+    }
+
+    .bg-gold {
+        background-color: #E5A93C;
+    }
+
+    .bg-gold-hover:hover {
+        background-color: #C99028;
+    }
+
+    .badge-terlambat {
+        background-color: #E53E3E;
+        color: #fff;
+    }
+
+    .badge-dipinjam {
+        background-color: #DD6B20;
+        color: #fff;
+    }
+
+    .badge-dikembalikan {
+        background-color: #38A169;
+        color: #fff;
+    }
+}

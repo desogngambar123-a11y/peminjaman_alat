@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistem Peminjaman Alat - MUSABA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #121212;
+      color: #FFFFFF;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+    .bg-maroon-dark { background-color: #4A0E17; }
+    .bg-maroon-card { background-color: #5C121E; }
+    .bg-maroon-hover:hover { background-color: #6E1624; }
+    .border-maroon { border-color: #7A1C2B; }
+    .text-gold { color: #E5A93C; }
+    .bg-gold { background-color: #E5A93C; }
+    .bg-gold-hover:hover { background-color: #C99028; }
+    .badge-terlambat { background-color: #E53E3E; color: white; }
+    .badge-dipinjam { background-color: #DD6B20; color: white; }
+    .badge-dikembalikan { background-color: #38A169; color: white; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- PAGE: LOGIN -->
+  <div id="page-login" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-950 via-maroon-dark to-black p-4">
+    <div class="w-full max-w-md bg-maroon-card border border-maroon rounded-2xl p-8 shadow-2xl">
+      <div class="text-center mb-6 flex flex-col items-center">
+        <!-- Logo MUSABA -->
+        <div class="mb-3 flex flex-col items-center">
+          <img src="c:\Users\Lab 3 Musaba\Downloads\download.png" alt="Logo MUSABA" class="w-60 h-32 object-contain">
+          <h1 class="text-3xl font-black tracking-widest text-teal-400 mt-2">MUSABA</h1>
+          <p class="text-[11px] font-bold text-gold tracking-widest uppercase">SMK MUHAMMADIYAH 1 BANTUL</p>
+        </div>
+        <p class="text-xs text-gray-300">Sistem Peminjaman Alat</p>
+      </div>
+
+      <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs text-gray-300 mb-1">Username</label>
+          <input type="text" id="login-username" required class="w-full px-4 py-2.5 rounded-lg bg-black/40 border border-maroon text-white focus:outline-none focus:border-gold" placeholder="Ketik admin / siswa">
+        </div>
+        <div>
+          <label class="block text-xs text-gray-300 mb-1">Password</label>
+          <input type="password" id="login-password" required class="w-full px-4 py-2.5 rounded-lg bg-black/40 border border-maroon text-white focus:outline-none focus:border-gold" placeholder="••••••••">
+        </div>
+        <button type="submit" class="w-full py-3 bg-gold hover:bg-gold-hover text-black font-bold rounded-lg transition duration-200 shadow-lg mt-2">Login</button>
+      </form>
+
+      <!-- Tombol Login Demo Cepat -->
+      <div class="mt-4 pt-3 border-t border-maroon/60 text-center">
+        <p class="text-[11px] text-gray-400 mb-2">Atau uji coba cepat:</p>
+        <div class="flex space-x-2">
+          <button onclick="quickLogin('admin', '123')" class="flex-1 py-1.5 bg-maroon-dark hover:bg-maroon-hover border border-maroon rounded text-xs text-gold font-semibold transition">
+            <i class="fa-solid fa-user-shield mr-1"></i> Demo Admin
+          </button>
+          <button onclick="quickLogin('siswa', '123')" class="flex-1 py-1.5 bg-maroon-dark hover:bg-maroon-hover border border-maroon rounded text-xs text-teal-400 font-semibold transition">
+            <i class="fa-solid fa-user-graduate mr-1"></i> Demo Siswa
+          </button>
+        </div>
+      </div>
+
+      <div class="text-center mt-5 text-xs text-gray-300">
+        Belum punya akun? <a href="#" onclick="showPage('register')" class="text-gold font-bold hover:underline">Register</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE: REGISTER -->
+  <div id="page-register" class="hidden min-h-screen flex items-center justify-center bg-gradient-to-br from-red-950 via-maroon-dark to-black p-4">
+    <div class="w-full max-w-md bg-maroon-card border border-maroon rounded-2xl p-8 shadow-2xl">
+      <div class="text-center mb-6 flex flex-col items-center">
+        <img src="c:\Users\Lab 3 Musaba\Downloads\download.png" alt="Logo MUSABA" class="w-60 h-32 object-contain mb-2">
+        <h2 class="text-2xl font-bold text-gold">Daftar Akun Baru</h2>
+        <p class="text-xs text-gray-300 mt-1">Sistem Peminjaman Alat MUSABA</p>
+      </div>
+
+      <form id="form-register" onsubmit="handleRegister(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs text-gray-300 mb-1">Username</label>
+          <input type="text" id="reg-username" required class="w-full px-4 py-2.5 rounded-lg bg-black/40 border border-maroon text-white focus:outline-none focus:border-gold" placeholder="Masukkan username baru">
+        </div>
+        <div>
+          <label class="block text-xs text-gray-300 mb-1">Password</label>
+          <input type="password" id="reg-password" required class="w-full px-4 py-2.5 rounded-lg bg-black/40 border border-maroon text-white focus:outline-none focus:border-gold" placeholder="••••••••">
+        </div>
+        <div>
+          <label class="block text-xs text-gray-300 mb-1">Peran / Role</label>
+          <select id="reg-role" class="w-full px-4 py-2.5 rounded-lg bg-black/40 border border-maroon text-white focus:outline-none focus:border-gold">
+            <option value="Siswa">Siswa / Peminjam</option>
+            <option value="Admin">Admin Lab</option>
+          </select>
+        </div>
+        <button type="submit" class="w-full py-3 bg-gold hover:bg-gold-hover text-black font-bold rounded-lg transition duration-200 shadow-lg mt-2">Daftar Akun</button>
+      </form>
+      <div class="text-center mt-6 text-xs text-gray-300">
+        Sudah memiliki akun? <a href="#" onclick="showPage('login')" class="text-gold font-bold hover:underline">Login</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE: DASHBOARD -->
+  <div id="page-dashboard" class="hidden flex-1 flex flex-col bg-gradient-to-b from-maroon-dark via-black to-maroon-dark min-h-screen">
+    <header class="border-b border-maroon bg-black/40 px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center space-x-4">
+        <div class="flex items-center space-x-3">
+          <img src="c:\Users\Lab 3 Musaba\Downloads\download.png" alt="Logo MUSABA" class="w-50 h-20 object-contain">
+          <div>
+            <div class="flex items-center space-x-2">
+              <span class="text-xl font-black text-teal-400 tracking-wider">MUSABA</span>
+              <span id="user-role-badge" class="text-[10px] px-2 py-0.5 rounded bg-gold/20 text-gold font-bold border border-gold/40">Role</span>
+            </div>
+            <h1 class="text-base font-bold tracking-wide text-white leading-tight">Peminjaman Alat</h1>
+            <p id="welcome-user-text" class="text-[10px] text-amber-200/90 tracking-wide">SMK MUHAMMADIYAH 1 BANTUL</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-3">
+        <button id="btn-input-peminjaman" onclick="openModalPeminjaman()" class="bg-gold hover:bg-gold-hover text-black px-4 py-2 rounded-lg font-bold text-sm flex items-center shadow-lg transition">
+          <i class="fa-solid fa-plus mr-2"></i> Input Peminjaman
+        </button>
+        <button onclick="openModalPassword()" class="bg-maroon-dark border border-maroon hover:bg-maroon-hover text-gray-200 px-3 py-2 rounded-lg font-bold text-xs flex items-center shadow transition" title="Ganti Password">
+          <i class="fa-solid fa-key mr-1.5"></i> Ganti Password
+        </button>
+        <button onclick="logout()" title="Keluar" class="text-gray-400 hover:text-white p-2">
+          <i class="fa-solid fa-right-from-bracket text-lg"></i>
+        </button>
+      </div>
+    </header>
+
+    <main class="flex-1 p-6 max-w-7xl mx-auto w-full space-y-6">
+      <!-- Statistik -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-maroon-card border border-maroon rounded-xl p-4 flex items-center justify-between">
+          <div>
+            <p class="text-xs text-gray-300 font-medium">Total Alat</p>
+            <h2 class="text-3xl font-extrabold mt-1">362</h2>
+          </div>
+          <div class="p-3 bg-black/30 rounded-lg text-gold"><i class="fa-solid fa-boxes-stacked text-2xl"></i></div>
+        </div>
+        <div class="bg-maroon-card border border-maroon rounded-xl p-4 flex items-center justify-between">
+          <div>
+            <p class="text-xs text-gray-300 font-medium">Sedang Dipinjam</p>
+            <h2 id="stat-dipinjam" class="text-3xl font-extrabold mt-1">0</h2>
+          </div>
+          <div class="p-3 bg-black/30 rounded-lg text-amber-400"><i class="fa-solid fa-hand-holding text-2xl"></i></div>
+        </div>
+        <div class="bg-maroon-card border border-maroon rounded-xl p-4 flex items-center justify-between">
+          <div>
+            <p class="text-xs text-gray-300 font-medium">Sudah Dikembalikan</p>
+            <h2 id="stat-dikembalikan" class="text-3xl font-extrabold mt-1 text-emerald-400">0</h2>
+          </div>
+          <div class="p-3 bg-black/30 rounded-lg text-emerald-400"><i class="fa-solid fa-calendar-check text-2xl"></i></div>
+        </div>
+        <div class="bg-maroon-card border border-maroon rounded-xl p-4 flex items-center justify-between">
+          <div>
+            <p class="text-xs text-gray-300 font-medium">Terlambat</p>
+            <h2 id="stat-terlambat" class="text-3xl font-extrabold mt-1 text-red-400">0</h2>
+          </div>
+          <div class="p-3 bg-black/30 rounded-lg text-red-500"><i class="fa-solid fa-clock-rotate-left text-2xl"></i></div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Main Table Panel -->
+        <div class="lg:col-span-2 bg-maroon-card border border-maroon rounded-xl p-5 shadow-xl flex flex-col">
+          
+          <!-- Navigasi Tab Riwayat & Aktif -->
+          <div class="flex items-center justify-between border-b border-maroon pb-3 mb-4">
+            <div class="flex space-x-2">
+              <button id="tab-btn-aktif" onclick="switchTab('aktif')" class="px-4 py-2 rounded-lg text-xs font-bold transition bg-gold text-black shadow">
+                <i class="fa-solid fa-list-check mr-1.5"></i> Peminjaman Aktif
+              </button>
+              <button id="tab-btn-riwayat" onclick="switchTab('riwayat')" class="px-4 py-2 rounded-lg text-xs font-bold transition bg-black/40 text-gray-300 hover:text-white hover:bg-black/60 border border-maroon">
+                <i class="fa-solid fa-clock-rotate-left mr-1.5"></i> Riwayat Peminjaman
+              </button>
+            </div>
+            <span id="badge-terlambat-count" class="text-xs text-red-400 font-semibold bg-red-950/60 border border-red-800 px-3 py-1.5 rounded-lg flex items-center">
+              <i class="fa-solid fa-triangle-exclamation mr-1.5"></i> 0 Terlambat
+            </span>
+          </div>
+
+          <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+            <div class="relative flex-1 min-w-[200px]">
+              <i class="fa-solid fa-search absolute left-3 top-3 text-gray-400 text-sm"></i>
+              <input type="text" id="search-input" oninput="renderTable()" placeholder="Cari Alat / Peminjam..." class="w-full pl-9 pr-4 py-2 bg-black/40 border border-maroon rounded-lg text-xs text-white focus:outline-none focus:border-gold">
+            </div>
+          </div>
+
+          <div class="overflow-x-auto flex-1">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-black/40 text-gray-300 border-b border-maroon uppercase tracking-wider">
+                <tr>
+                  <th class="p-3">Foto</th>
+                  <th class="p-3">Alat</th>
+                  <th class="p-3">Borrower</th>
+                  <th class="p-3">Tanggal Pinjam</th>
+                  <th class="p-3">Status</th>
+                  <th class="p-3 text-center">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="table-body" class="divide-y divide-maroon/40 text-gray-200"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Feedback Panel -->
+        <div class="bg-maroon-card border border-maroon rounded-xl p-5 shadow-xl flex flex-col justify-between">
+          <div>
+            <h3 class="text-base font-bold text-gold mb-3 flex items-center">
+              <i class="fa-solid fa-comments mr-2"></i> Feedback / Tanggapan
+            </h3>
+            <div id="feedback-list" class="space-y-3 max-h-[360px] overflow-y-auto pr-1"></div>
+          </div>
+
+          <form onsubmit="handleSendFeedback(event)" class="mt-4 pt-3 border-t border-maroon flex items-center space-x-2">
+            <input type="text" id="feedback-input" required placeholder="Tulis feedback..." class="flex-1 px-3 py-2 bg-black/40 border border-maroon rounded-lg text-xs text-white focus:outline-none focus:border-gold">
+            <button type="submit" class="bg-gold hover:bg-gold-hover text-black px-3 py-2 rounded-lg font-bold text-xs transition">
+              <i class="fa-solid fa-paper-plane"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- MODAL INPUT PEMINJAMAN -->
+  <div id="modal-peminjaman" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
+    <div class="bg-maroon-card border border-maroon w-full max-w-md rounded-xl p-6 shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b border-maroon pb-3">
+        <h3 class="text-lg font-bold text-gold">Input Peminjaman Alat</h3>
+        <button onclick="closeModalPeminjaman()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      <form onsubmit="handleCreateLoan(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block text-gray-300 mb-1">Nama Alat</label>
+          <input type="text" id="input-alat" required class="w-full px-3 py-2 rounded bg-black/40 border border-maroon text-white focus:outline-none focus:border-gold" placeholder="Misal: Multimeter Digital">
+        </div>
+        <div>
+          <label class="block text-gray-300 mb-1">Foto Alat (Upload / URL Foto)</label>
+          <input type="file" id="input-foto-file" accept="image/*" onchange="previewImage(event)" class="w-full px-3 py-1 rounded bg-black/40 border border-maroon text-gray-300 mb-1 text-[11px]">
+          <input type="url" id="input-foto-url" class="w-full px-3 py-2 rounded bg-black/40 border border-maroon text-white focus:outline-none focus:border-gold" placeholder="Atau tempel URL gambar">
+        </div>
+        <div>
+          <label class="block text-gray-300 mb-1">Nama Peminjam (Borrower)</label>
+          <input type="text" id="input-borrower" required class="w-full px-3 py-2 rounded bg-black/40 border border-maroon text-white focus:outline-none focus:border-gold" placeholder="Nama Peminjam">
+        </div>
+        <div>
+          <label class="block text-gray-300 mb-1">Tanggal Pinjam</label>
+          <input type="date" id="input-tanggal" required class="w-full px-3 py-2 rounded bg-black/40 border border-maroon text-white focus:outline-none focus:border-gold">
+        </div>
+        <div class="pt-2 flex justify-end space-x-2">
+          <button type="button" onclick="closeModalPeminjaman()" class="px-4 py-2 bg-black/40 border border-maroon rounded text-gray-300">Batal</button>
+          <button type="submit" class="px-4 py-2 bg-gold hover:bg-gold-hover text-black font-bold rounded">Simpan Peminjaman</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL GANTI PASSWORD -->
+  <div id="modal-password" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
+    <div class="bg-maroon-card border border-maroon w-full max-w-md rounded-xl p-6 shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b border-maroon pb-3">
+        <h3 class="text-lg font-bold text-gold">Ganti Password Akun</h3>
+        <button onclick="closeModalPassword()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      <form onsubmit="handleUpdatePassword(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block text-gray-300 mb-1">Password Baru</label>
+          <input type="password" id="new-password-input" required class="w-full px-3 py-2 rounded bg-black/40 border border-maroon text-white focus:outline-none focus:border-gold" placeholder="Masukkan password baru">
+        </div>
+        <div class="pt-2 flex justify-end space-x-2">
+          <button type="button" onclick="closeModalPassword()" class="px-4 py-2 bg-black/40 border border-maroon rounded text-gray-300">Batal</button>
+          <button type="submit" class="px-4 py-2 bg-gold hover:bg-gold-hover text-black font-bold rounded">Simpan Password</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT APP LOGIC -->
+  <script>
+    let uploadedFotoBase64 = '';
+    let currentUser = null;
+    let activeTab = 'aktif'; // 'aktif' atau 'riwayat'
+
+    let users = [
+      { username: 'admin', password: '123', role: 'Admin' },
+      { username: 'siswa', password: '123', role: 'Siswa' }
+    ];
+
+    let loans = [
+      { id: 1, foto: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=150', alat: 'Multimeter Digital', borrower: 'siswa', tanggal: '18/10/2026', status: 'Terlambat' },
+      { id: 2, foto: 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=150', alat: 'Oscilloscope', borrower: 'Budi Santoso', tanggal: '19/10/2026', status: 'Dipinjam' },
+      { id: 3, foto: 'https://images.unsplash.com/photo-1504148455328-c376907d081c?w=150', alat: 'Solder Listrik', borrower: 'siswa', tanggal: '15/10/2026', status: 'Dikembalikan' },
+      { id: 4, foto: 'https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=150', alat: 'Tang Potong Presisi', borrower: 'Siti Aminah', tanggal: '12/10/2026', status: 'Dikembalikan' }
+    ];
+
+    let feedbacks = [
+      { id: 1, user: 'Siswa', text: 'Unit multimeter #2 butuh kalibrasi.', time: '10 min lalu' }
+    ];
+
+    function showPage(pageId) {
+      document.getElementById('page-login').classList.add('hidden');
+      document.getElementById('page-register').classList.add('hidden');
+      document.getElementById('page-dashboard').classList.add('hidden');
+      
+      document.getElementById(`page-${pageId}`).classList.remove('hidden');
+      if(pageId === 'dashboard') {
+        renderTable();
+        renderFeedbacks();
+        setupRoleUI();
+      }
+    }
+
+    function switchTab(tab) {
+      activeTab = tab;
+      const btnAktif = document.getElementById('tab-btn-aktif');
+      const btnRiwayat = document.getElementById('tab-btn-riwayat');
+
+      if (tab === 'aktif') {
+        btnAktif.className = 'px-4 py-2 rounded-lg text-xs font-bold transition bg-gold text-black shadow';
+        btnRiwayat.className = 'px-4 py-2 rounded-lg text-xs font-bold transition bg-black/40 text-gray-300 hover:text-white hover:bg-black/60 border border-maroon';
+      } else {
+        btnRiwayat.className = 'px-4 py-2 rounded-lg text-xs font-bold transition bg-gold text-black shadow';
+        btnAktif.className = 'px-4 py-2 rounded-lg text-xs font-bold transition bg-black/40 text-gray-300 hover:text-white hover:bg-black/60 border border-maroon';
+      }
+      renderTable();
+    }
+
+    function handleLogin(e) {
+      if(e) e.preventDefault();
+      
+      const uInput = document.getElementById('login-username').value.trim();
+      const pInput = document.getElementById('login-password').value;
+
+      const foundUser = users.find(x => x.username.toLowerCase() === uInput.toLowerCase() && x.password === pInput);
+
+      if (foundUser) {
+        currentUser = foundUser;
+        showPage('dashboard');
+      } else {
+        alert('Username atau Password salah!');
+      }
+    }
+
+    function quickLogin(username, password) {
+      document.getElementById('login-username').value = username;
+      document.getElementById('login-password').value = password;
+      handleLogin(null);
+    }
+
+    function handleRegister(e) {
+      e.preventDefault();
+      const u = document.getElementById('reg-username').value.trim();
+      const p = document.getElementById('reg-password').value;
+      const r = document.getElementById('reg-role').value;
+
+      if (!u || !p) {
+        alert('Mohon isi username dan password!');
+        return;
+      }
+
+      if (users.some(x => x.username.toLowerCase() === u.toLowerCase())) {
+        alert('Username sudah digunakan!');
+        return;
+      }
+
+      users.push({ username: u, password: p, role: r });
+      alert(`Registrasi Berhasil!\nUsername: ${u}\nRole: ${r}\nSilakan login sekarang.`);
+      
+      document.getElementById('login-username').value = u;
+      document.getElementById('login-password').value = p;
+      showPage('login');
+    }
+
+    function setupRoleUI() {
+      if (!currentUser) return;
+      document.getElementById('user-role-badge').innerText = currentUser.role;
+      document.getElementById('welcome-user-text').innerText = `Halo, ${currentUser.username} (${currentUser.role}) - SMK MUHAMMADIYAH 1 BANTUL`;
+      
+      const btnInput = document.getElementById('btn-input-peminjaman');
+      btnInput.classList.remove('hidden');
+    }
+
+    function logout() {
+      currentUser = null;
+      document.getElementById('login-username').value = '';
+      document.getElementById('login-password').value = '';
+      showPage('login');
+    }
+
+    function updateStats() {
+      const dipinjamCount = loans.filter(l => l.status === 'Dipinjam').length;
+      const dikembalikanCount = loans.filter(l => l.status === 'Dikembalikan').length;
+      const terlambatCount = loans.filter(l => l.status === 'Terlambat').length;
+
+      document.getElementById('stat-dipinjam').innerText = dipinjamCount;
+      document.getElementById('stat-dikembalikan').innerText = dikembalikanCount;
+      document.getElementById('stat-terlambat').innerText = terlambatCount;
+      document.getElementById('badge-terlambat-count').innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1.5"></i> ${terlambatCount} Terlambat`;
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('table-body');
+      const search = document.getElementById('search-input').value.toLowerCase();
+      tbody.innerHTML = '';
+      updateStats();
+
+      // Filter berdasarkan role user dan tab yang aktif
+      let dataList = loans;
+
+      if (currentUser && currentUser.role === 'Siswa') {
+        dataList = dataList.filter(item => item.borrower.toLowerCase() === currentUser.username.toLowerCase());
+      }
+
+      if (activeTab === 'aktif') {
+        dataList = dataList.filter(item => item.status === 'Dipinjam' || item.status === 'Terlambat');
+      } else if (activeTab === 'riwayat') {
+        dataList = dataList.filter(item => item.status === 'Dikembalikan');
+      }
+
+      const filtered = dataList.filter(item => 
+        item.alat.toLowerCase().includes(search) || item.borrower.toLowerCase().includes(search)
+      );
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="p-6 text-center text-gray-400">
+              <i class="fa-solid fa-folder-open text-2xl mb-2 block"></i>
+              Tidak ada data peminjaman ${activeTab === 'riwayat' ? 'riwayat' : 'aktif'}.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      filtered.forEach(item => {
+        let badgeClass = 'badge-dipinjam';
+        if (item.status === 'Terlambat') badgeClass = 'badge-terlambat';
+        if (item.status === 'Dikembalikan') badgeClass = 'badge-dikembalikan';
+
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-black/20 transition';
+        tr.innerHTML = `
+          <td class="p-3">
+            <img src="${item.foto}" alt="${item.alat}" class="w-10 h-10 object-cover rounded-lg border border-maroon bg-black/40">
+          </td>
+          <td class="p-3 font-semibold">${item.alat}</td>
+          <td class="p-3 text-gray-300">${item.borrower}</td>
+          <td class="p-3 text-gray-400">${item.tanggal}</td>
+          <td class="p-3">
+            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${badgeClass}">${item.status}</span>
+          </td>
+          <td class="p-3 text-center flex items-center justify-center space-x-2">
+            ${currentUser && currentUser.role === 'Admin' ? `
+              ${item.status !== 'Dikembalikan' ? 
+                `<button onclick="prosesPengembalian(${item.id})" class="px-2 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-[10px] font-bold shadow transition">Kembalikan</button>` : 
+                `<span class="text-gray-500 text-[10px]"><i class="fa-solid fa-check-circle text-emerald-400 mr-1"></i>Selesai</span>`
+              }
+              <button onclick="hapusPeminjaman(${item.id})" class="px-2 py-1 bg-red-800/80 hover:bg-red-600 text-white rounded text-[10px] font-bold shadow transition">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            ` : `<span class="text-gray-400 text-[10px]">${item.status === 'Dikembalikan' ? '<i class="fa-solid fa-check text-emerald-400 mr-1"></i>Selesai' : 'Sedang Dipinjam'}</span>`}
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function prosesPengembalian(id) {
+      const item = loans.find(l => l.id === id);
+      if (item) {
+        item.status = 'Dikembalikan';
+        renderTable();
+      }
+    }
+
+    function hapusPeminjaman(id) {
+      if (confirm('Hapus data peminjaman ini?')) {
+        loans = loans.filter(l => l.id !== id);
+        renderTable();
+      }
+    }
+
+    function renderFeedbacks() {
+      const container = document.getElementById('feedback-list');
+      container.innerHTML = '';
+      feedbacks.forEach(fb => {
+        const div = document.createElement('div');
+        div.className = 'bg-black/30 border border-maroon p-3 rounded-lg space-y-1';
+        div.innerHTML = `
+          <div class="flex items-center justify-between text-[11px]">
+            <span class="font-bold text-gold">${fb.user}</span>
+            <span class="text-gray-500 text-[9px]">${fb.time}</span>
+          </div>
+          <p class="text-xs text-gray-200">${fb.text}</p>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function handleSendFeedback(e) {
+      e.preventDefault();
+      const input = document.getElementById('feedback-input');
+      if (input.value.trim() !== '') {
+        feedbacks.push({
+          id: Date.now(),
+          user: currentUser ? `${currentUser.username} (${currentUser.role})` : 'User',
+          text: input.value,
+          time: 'Baru saja'
+        });
+        input.value = '';
+        renderFeedbacks();
+      }
+    }
+
+    function openModalPeminjaman() {
+      uploadedFotoBase64 = '';
+      document.getElementById('input-alat').value = '';
+      document.getElementById('input-foto-file').value = '';
+      document.getElementById('input-foto-url').value = '';
+      
+      const inputBorrower = document.getElementById('input-borrower');
+      inputBorrower.value = currentUser ? currentUser.username : '';
+      
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('input-tanggal').value = today;
+
+      document.getElementById('modal-peminjaman').classList.remove('hidden');
+    }
+
+    function closeModalPeminjaman() {
+      document.getElementById('modal-peminjaman').classList.add('hidden');
+    }
+
+    function openModalPassword() {
+      document.getElementById('new-password-input').value = '';
+      document.getElementById('modal-password').classList.remove('hidden');
+    }
+
+    function closeModalPassword() {
+      document.getElementById('modal-password').classList.add('hidden');
+    }
+
+    function handleUpdatePassword(e) {
+      e.preventDefault();
+      const newPass = document.getElementById('new-password-input').value;
+      if (currentUser && newPass) {
+        currentUser.password = newPass;
+        const target = users.find(x => x.username.toLowerCase() === currentUser.username.toLowerCase());
+        if (target) target.password = newPass;
+        
+        alert('Password berhasil diperbarui!');
+        closeModalPassword();
+      }
+    }
+
+    function previewImage(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          uploadedFotoBase64 = e.target.result;
+        }
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function handleCreateLoan(e) {
+      e.preventDefault();
+      const alat = document.getElementById('input-alat').value;
+      const borrower = document.getElementById('input-borrower').value;
+      const tanggalInput = document.getElementById('input-tanggal').value;
+      const urlFoto = document.getElementById('input-foto-url').value;
+
+      let formattedDate = tanggalInput;
+      if(tanggalInput.includes('-')) {
+        const parts = tanggalInput.split('-');
+        formattedDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
+      }
+
+      let fotoFinal = uploadedFotoBase64 || urlFoto || 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=150';
+
+      loans.unshift({
+        id: Date.now(),
+        foto: fotoFinal,
+        alat,
+        borrower,
+        tanggal: formattedDate,
+        status: 'Dipinjam'
+      });
+
+      closeModalPeminjaman();
+      switchTab('aktif');
+      alert('Peminjaman alat berhasil diajukan!');
+    }
+  </script>
+</body>
+</html>
